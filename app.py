@@ -6,7 +6,7 @@ from pyecharts.globals import CurrentConfig
 CurrentConfig.GLOBAL_ENV = Environment(loader=FileSystemLoader("./templates"))
 
 from pyecharts import options as opts
-from pyecharts.charts import Bar
+from pyecharts.charts import Bar, Line
 
 
 app = Flask(__name__, static_folder="templates")
@@ -23,10 +23,24 @@ def bar_base() -> Bar:
     return c
 
 
+def line_chart() -> Line:
+    line = Line(init_opts=opts.InitOpts(width="1500px", height="800px"))
+    line.add_xaxis(["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"])
+    line.add_yaxis("商家A", [5, 20, 36, 10, 75, 90])
+    line.add_yaxis("商家B", [15, 25, 16, 55, 48, 8])
+    line.set_global_opts(title_opts=opts.TitleOpts(title="Line-基本示例", subtitle="我是副标题"))
+    return line
+
+
 @app.route("/")
 def index():
     c = bar_base()
     return Markup(c.render_embed())
+
+
+@app.route("/line")
+def line():
+    return line_chart().render_embed()
 
 
 if __name__ == "__main__":
